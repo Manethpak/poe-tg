@@ -59,6 +59,12 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle user messages and forward them to Poe."""
+    username = update.effective_user.username
+    if config.AUTHORIZATION:
+        if username not in config.AUTHORIZED_USERS:
+            await update.message.reply_text("You are not authorized to use this bot.")
+            return
+
     user_id = update.effective_user.id
     user_message = update.message.text
     

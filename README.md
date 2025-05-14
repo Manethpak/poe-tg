@@ -4,18 +4,14 @@ A Telegram bot that connects to Poe AI models, allowing you to chat with various
 
 ## Features
 
-- Chat with multiple AI models from Poe (Claude, GPT-4, etc.)
-- Switch between different AI models with a simple command
-- Persistent conversation history for contextual responses
-- SQLite database for storing user preferences and conversation history
-- Automatic message splitting for long responses
-
-### Todo
-
+- [x] Chat with multiple AI models from Poe (Claude, GPT-4, etc.)
+- [x] Switch between different AI models with a simple command
+- [x] Persistent conversation history for contextual responses
+- [x] Automatic message splitting for long responses
+- [x] Simple authorization for restricted access
 - [ ] Format markdown response to Telegram.
 - [ ] Custom system prompt for conversation.
 - [ ] Handling file uploads and downloads from Poe.
-- [ ] Implement authorize user list.
 
 ## Available Commands
 
@@ -27,7 +23,7 @@ A Telegram bot that connects to Poe AI models, allowing you to chat with various
 
 ## Supported AI Models
 
-Any model supported by Poe. Update your desired bot models in the `DEFAULT_BOT` and `AVAILABLE_BOTS` list in `config.py`.
+Any model supported by Poe. Update your desired bot models in the `DEFAULT_BOT` and `AVAILABLE_BOTS` list in [`config.py`](https://github.com/Manethpak/poe-tg/blob/main/poe_tg/config.py)
 
 ## Installation
 
@@ -43,7 +39,7 @@ Any model supported by Poe. Update your desired bot models in the `DEFAULT_BOT` 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/poe-tg.git
+   git clone https://github.com/manethpak/poe-tg.git
    cd poe-tg
    ```
 
@@ -55,10 +51,15 @@ Any model supported by Poe. Update your desired bot models in the `DEFAULT_BOT` 
 
 3. Create a `.env` file in the project root with your API keys:
 
-   ```
+   ```properties
    TELEGRAM_TOKEN=your_telegram_bot_token
    POE_API_KEY=your_poe_api_key
+   # Optional
+   AUTHORIZATION=true # Default to false
+   AUTHORIZED_USERS=user1,user2
    ```
+
+   Go to https://poe.com/api_key to get your Poe's API key.
 
 4. Run the bot:
    ```bash
