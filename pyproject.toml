@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "poe-tg"
+version = "0.1.0"
+description = "poe telegram bot"
+authors = ["manethpak <manethpak00@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi-poe = "^0.0.62"
+python-telegram-bot = "^22.0"
+python-dotenv = "^1.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
