@@ -27,6 +27,8 @@ TELEGRAM_MESSAGE_LIMIT = 4096
 AUTHORIZATION = os.getenv("AUTHORIZATION", "false").lower() == "true"
 AUTHORIZED_USERS = os.getenv("AUTHORIZED_USERS", "").split(",")
 
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+
 # Validate environment variables
 if AUTHORIZATION:
     logger.info("Authorization is enabled. Only authorized users can use the bot.")

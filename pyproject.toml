@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi-poe = "^0.0.62"
-python-telegram-bot = "^22.0"
+python-telegram-bot = {extras = ["webhooks"], version = "^22.1"}
 python-dotenv = "^1.1.0"
 
 

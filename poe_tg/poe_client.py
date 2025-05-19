@@ -6,7 +6,7 @@ async def get_poe_response(user_message: str, bot_name: str, user_id: int) -> st
     """Get response from Poe API with conversation history."""
     try:
         # Get recent conversation history
-        history = get_conversation_history(user_id, limit=10)
+        history = get_conversation_history(user_id, limit=5)
         
         # Create messages list with history and new user message
         messages = []
@@ -24,10 +24,9 @@ async def get_poe_response(user_message: str, bot_name: str, user_id: int) -> st
             messages = [fp.ProtocolMessage(role="user", content=user_message)]
         
         full_response = ""
-        
         async for partial in fp.get_bot_response(
             messages=messages, 
-            bot_name=bot_name, 
+            bot_name=bot_name,
             api_key=config.POE_API_KEY
         ): 
             full_response += partial.text

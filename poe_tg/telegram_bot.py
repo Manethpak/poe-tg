@@ -7,7 +7,7 @@ from .poe_client import get_poe_response
 from .utils import split_message
 from .database import clear_conversation_history, get_user_preference, set_user_preference
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def start(update: Update, _context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user_id = update.effective_user.id
     set_user_preference(user_id, bot_name=config.DEFAULT_BOT, temperature=0.7, system_prompt="")
@@ -18,7 +18,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         f"You can change the AI model with /select_bot"
     )
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def help_command(update: Update, _context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     await update.message.reply_text(
         "Just send me a message and I'll forward it to the selected AI model.\n"
@@ -32,7 +32,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "/clear_history - Clear your conversation history"
     )
 
-async def settings(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def settings(update: Update, _context: ContextTypes.DEFAULT_TYPE) -> None:
     """Show all user settings."""
     user_id = update.effective_user.id
     user_settings = get_user_preference(user_id)
@@ -44,7 +44,7 @@ async def settings(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         f"System Prompt: {user_settings['system_prompt'] or 'Not set'}"
     )
 
-async def select_bot(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def select_bot(update: Update, _context: ContextTypes.DEFAULT_TYPE) -> None:
     """Let the user select which bot to use."""
     keyboard = []
     for bot in config.AVAILABLE_BOTS:
@@ -53,13 +53,13 @@ async def select_bot(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Please select an AI model:", reply_markup=reply_markup)
 
-async def current_bot(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def current_bot(update: Update, _context: ContextTypes.DEFAULT_TYPE) -> None:
     """Show the current bot the user is using."""
     user_id = update.effective_user.id
     bot_name = get_user_preference(user_id)
     await update.message.reply_text(f"You are currently using: {bot_name}")
 
-async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def button_callback(update: Update, _context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle button callbacks for bot selection."""
     query = update.callback_query
     await query.answer()
@@ -83,7 +83,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     user_message = update.message.text
     
     # Get the user's preferred bot from the database
-    bot_name = get_user_preference(user_id)
+    preference = get_user_preference(user_id)
     
     # Send a "typing" action
     await context.bot.send_chat_action(
@@ -92,7 +92,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     )
     
     # Get response from Poe with conversation history
-    response = await get_poe_response(user_message, bot_name, user_id)
+    response = await get_poe_response(user_message, preference["bot_name"], user_id)
     
     # Split the response if it's too long
     message_chunks = split_message(response)
@@ -105,7 +105,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             await asyncio.sleep(0.5)
 
 # Add this handler to telegram_bot.py
-async def clear_history(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def clear_history(update: Update, _context: ContextTypes.DEFAULT_TYPE) -> None:
     """Clear the conversation history."""
     user_id = update.effective_user.id
     clear_conversation_history(user_id)

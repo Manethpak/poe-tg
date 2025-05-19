@@ -1,3 +1,5 @@
+# TODO: adapter for cloud database
+
 import sqlite3
 from pathlib import Path
 from . import config
@@ -50,18 +52,20 @@ def get_user_preference(user_id):
     
     conn.close()
     
-    if result:
-        return {
-            "bot_name": result[1],
-            "system_prompt": result[2],
-            "temperature": result[3]
-        }
-    else:
+    # Return default preferences if no result found
+    if not result:
         return {
             "bot_name": config.DEFAULT_BOT,
             "system_prompt": "",
             "temperature": 0.7
         }
+    
+    # Only access result tuple if it exists
+    return {
+        "bot_name": result[1],
+        "system_prompt": result[2],
+        "temperature": result[3]
+    }
 
 class UserSettingParams(TypedDict):
     bot_name: str
