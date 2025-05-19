@@ -15,11 +15,13 @@ A Telegram bot that connects to Poe AI models, allowing you to chat with various
 
 ## Available Commands
 
-- `/start` - Initialize the bot and set default AI model
-- `/help` - Display available commands
-- `/select_bot` - Choose which AI model to use
-- `/current_bot` - Show the AI model you're currently using
-- `/clear_history` - Clear your conversation history
+- /start - Start the bot
+- /help - Show this help message
+- /select_bot - Choose which AI model to use
+- /settings - Show your current settings
+- /set_system_prompt - Set a custom system prompt
+- /set_temperature - Set the temperature for AI responses
+- /clear_history - Clear your conversation history
 
 ## Supported AI Models
 
@@ -54,6 +56,7 @@ Any model supported by Poe. Update your desired bot models in the `DEFAULT_BOT` 
    ```properties
    TELEGRAM_TOKEN=your_telegram_bot_token
    POE_API_KEY=your_poe_api_key
+   WEBHOOK_URL=https://URL_ADDRESS # Running app in webhook mode
    # Optional
    AUTHORIZATION=true # Default to false
    AUTHORIZED_USERS=user1,user2
@@ -62,8 +65,13 @@ Any model supported by Poe. Update your desired bot models in the `DEFAULT_BOT` 
    Go to https://poe.com/api_key to get your Poe's API key.
 
 4. Run the bot:
+
    ```bash
+   # Webhook mode
    poetry run python -m poe_tg
+
+   # Polling mode
+   poetry run python -m poe_tg --poll
    ```
 
 ## Project Structure
