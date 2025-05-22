@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "poe-tg"
+name = "poe_tg"
 version = "0.1.0"
 description = "poe telegram bot"
 authors = ["manethpak <manethpak00@gmail.com>"]
