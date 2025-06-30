@@ -6,7 +6,7 @@ from telegram.ext import Application, ApplicationBuilder
 from argparse import ArgumentParser
 
 from . import config
-from .telegram_bot import setup_handlers
+from .telegram_handler import setup_handlers
 from .database import init_db
 
 
@@ -19,24 +19,30 @@ setup_handlers(webhook_app)
 
 def run_polling():
     init_db()
-    
+
     if not config.TELEGRAM_TOKEN:
-        config.logger.error("No Telegram token provided. Set the TELEGRAM_TOKEN in environment variables.")
+        config.logger.error(
+            "No Telegram token provided. Set the TELEGRAM_TOKEN in environment variables."
+        )
         return
-  
+
     polling_app.run_polling()
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    """ Sets the webhook for the Telegram Bot and manages its lifecycle (start/stop). """
+    """Sets the webhook for the Telegram Bot and manages its lifecycle (start/stop)."""
     init_db()
 
     if not config.WEBHOOK_URL:
-        config.logger.error("WEBHOOK_URL not found. Please set it in your environment or .env file.")
-    
+        config.logger.error(
+            "WEBHOOK_URL not found. Please set it in your environment or .env file."
+        )
+
     if not config.TELEGRAM_TOKEN:
-        config.logger.error("No Telegram token provided. Set the TELEGRAM_TOKEN in environment variables.")
+        config.logger.error(
+            "No Telegram token provided. Set the TELEGRAM_TOKEN in environment variables."
+        )
         return
 
     await webhook_app.bot.set_webhook(url=config.WEBHOOK_URL + "/webhook")
@@ -46,11 +52,13 @@ async def lifespan(_: FastAPI):
         yield
         await webhook_app.stop()
 
+
 app = FastAPI(lifespan=lifespan)
+
 
 @app.post("/webhook")
 async def process_update(request: Request):
-    """ Handles incoming Telegram updates and processes them with the bot. """
+    """Handles incoming Telegram updates and processes them with the bot."""
     message = await request.json()
     update = Update.de_json(data=message, bot=webhook_app.bot)
     await webhook_app.process_update(update)
@@ -58,7 +66,9 @@ async def process_update(request: Request):
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Run the Telegram bot in polling or webhook mode")
+    parser = ArgumentParser(
+        description="Run the Telegram bot in polling or webhook mode"
+    )
     parser.add_argument("--poll", action="store_true", help="Run in polling mode")
     args = parser.parse_args()
 
@@ -69,5 +79,5 @@ if __name__ == "__main__":
     else:
         config.logger.info("Starting bot in webhook mode...")
         import uvicorn
+
         uvicorn.run(app, host="0.0.0.0", port=8000)
-    
