@@ -67,11 +67,11 @@ Any model supported by Poe. Update your desired bot models in the `DEFAULT_BOT` 
 4. Run the bot:
 
    ```bash
-   # Webhook mode
-   poetry run python -m poe_tg
+   # Production mode (Webhook mode)
+   poetry run start
 
-   # Polling mode
-   poetry run python -m poe_tg --poll
+   # Dev mode (Polling mode)
+   poetry run dev
    ```
 
 ## Project Structure

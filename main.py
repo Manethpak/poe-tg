@@ -5,9 +5,9 @@ from telegram import Update
 from telegram.ext import Application, ApplicationBuilder
 from argparse import ArgumentParser
 
-from . import config
-from .telegram_handler import setup_handlers
-from .database import init_db
+from poe_tg import config
+from poe_tg.telegram_handler import setup_handlers
+from poe_tg.database import init_db
 
 
 polling_app = ApplicationBuilder().token(config.TELEGRAM_TOKEN).build()
@@ -65,7 +65,7 @@ async def process_update(request: Request):
     return Response(status_code=HTTPStatus.OK)
 
 
-if __name__ == "__main__":
+def main():
     parser = ArgumentParser(
         description="Run the Telegram bot in polling or webhook mode"
     )
@@ -81,3 +81,7 @@ if __name__ == "__main__":
         import uvicorn
 
         uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+if __name__ == "__main__":
+    main()
