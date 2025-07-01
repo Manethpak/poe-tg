@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: poe-tg-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: poe_tg_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U poe_user -d poe_tg"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

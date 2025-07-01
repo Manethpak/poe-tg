@@ -1,6 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from ..database import set_user_preference
+from poe_tg.db.database import set_user_preference
 
 
 async def set_system_prompt(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

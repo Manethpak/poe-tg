@@ -1,10 +1,10 @@
 import asyncio
 from telegram import Update
 from telegram.ext import ContextTypes
-from .. import config
-from ..poe_client import get_poe_response
-from ..utils import split_message
-from ..database import get_user_preference
+from poe_tg import config
+from poe_tg.poe_client import get_poe_response
+from poe_tg.utils import split_message
+from poe_tg.db.database import get_user_preference
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

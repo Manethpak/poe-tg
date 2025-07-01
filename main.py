@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 
 from poe_tg import config
 from poe_tg.telegram_handler import setup_handlers
-from poe_tg.database import init_db
+from poe_tg.db.database import init_db
 
 
 polling_app = ApplicationBuilder().token(config.TELEGRAM_TOKEN).build()

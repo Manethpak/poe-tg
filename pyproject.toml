@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "poe_tg"
-version = "0.1.0"
-description = "poe telegram bot"
+version = "0.2.0"
+description = "Telegram bot connected to Poe"
 authors = ["manethpak <manethpak00@gmail.com>"]
 license = "MIT"
 readme = "README.md"
@@ -11,7 +11,10 @@ python = "^3.10"
 fastapi-poe = "^0.0.62"
 python-telegram-bot = {extras = ["webhooks"], version = "^22.1"}
 python-dotenv = "^1.1.0"
-
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.0"}
+alembic = "^1.13.0"
+asyncpg = "^0.29.0"
+psycopg2-binary = "^2.9.10"
 
 [tool.poetry.group.dev.dependencies]
 watchdog = "^6.0.0"

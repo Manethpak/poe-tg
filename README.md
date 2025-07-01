@@ -87,12 +87,25 @@ Any model supported by Poe. Update your desired bot models in the `DEFAULT_BOT` 
 
 ## Database
 
-The application uses SQLite for persistent storage:
+The application uses PostgreSQL for persistent storage with SQLAlchemy ORM and Alembic for migrations:
 
-- User preferences (selected AI model)
-- Conversation history (for maintaining context)
+### Database Setup
 
-The database file (`user_data.db`) is created automatically in the project root directory.
+1. Set the `DATABASE_URL` environment variable in your `.env` file:
+   ```properties
+   DATABASE_URL=postgresql://username:password@localhost/database_name
+   ```
+
+2. Initialize the database and run migrations:
+   ```bash
+   poetry run alembic upgrade head
+   ```
+
+### Database Management
+
+For detailed database management commands and migration workflows, see [Database Documentation](poe_tg/db/database.md).
+
+The database schema is automatically created and managed through Alembic migrations, ensuring version control for your database structure.
 
 ## License
 

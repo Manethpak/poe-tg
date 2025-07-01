@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from poe_tg import config
-from poe_tg.database import set_user_preference
+from poe_tg.db.database import set_user_preference
 
 
 async def start(update: Update, _context: ContextTypes.DEFAULT_TYPE) -> None:

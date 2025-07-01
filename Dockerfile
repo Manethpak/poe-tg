@@ -12,7 +12,6 @@ WORKDIR /app
 
 # Copy all project files needed for installation
 COPY pyproject.toml poetry.lock README.md ./
-COPY poe_tg ./poe_tg
 
 RUN poetry install --without dev && rm -rf $POETRY_CACHE_DIR
 
@@ -29,7 +28,8 @@ ENV VIRTUAL_ENV=/app/.venv \
     PYTHONUNBUFFERED=1
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
-COPY --from=builder /app/poe_tg ./poe_tg
+COPY poe_tg ./poe_tg
+COPY main.py ./
 
 # Change ownership of application files
 RUN chown -R botuser:botuser /app
@@ -41,4 +41,4 @@ USER botuser
 HEALTHCHECK CMD python -c "import sys; sys.exit(0)"
 
 # Use exec form of ENTRYPOINT for proper signal handling
-ENTRYPOINT ["python", "-m", "poe_tg.main"]
+ENTRYPOINT ["python", "main.py"]
