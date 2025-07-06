@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -24,6 +24,7 @@ class ConversationMessage(BaseModel):
     content: str
     timestamp: datetime
     bot_name: str
+    attachments: Optional[List[str]] = None
 
 
 class ConversationHistory(BaseModel):

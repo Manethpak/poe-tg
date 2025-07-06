@@ -9,9 +9,21 @@ A Telegram bot that connects to Poe AI models, allowing you to chat with various
 - [x] Persistent conversation history for contextual responses
 - [x] Automatic message splitting for long responses
 - [x] Simple authorization for restricted access
+- [x] Custom system prompt for conversation.
+- [x] Handling file uploads and downloads from Poe
 - [ ] Format markdown response to Telegram.
-- [ ] Custom system prompt for conversation.
-- [ ] Handling file uploads and downloads from Poe.
+
+## Supported Media Types
+
+The bot can handle the following types of media:
+- **Text messages** - Standard chat messages
+- **Images (photos)** - JPEG, PNG, GIF, WebP formats
+- **Documents and files** - PDF, TXT, DOC, DOCX, and other document types
+
+When you send media files, the bot will:
+1. Download the file to process it
+2. Include file information in the message sent to the AI
+3. Clean up temporary files after processing
 
 ## Available Commands
 

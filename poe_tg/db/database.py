@@ -1,12 +1,39 @@
 import os
-from sqlalchemy import create_engine, text
+import json
+from fastapi_poe.types import Attachment
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import StaticPool
-from typing import Optional, List, Dict, Any, Generator
+from typing import List, Any, Generator
 from datetime import datetime
 from poe_tg import config
 from .models import Base, UserPreference, ConversationHistory
+
+
+def deserialize_attachments(attachments_data: Any) -> List[Attachment]:
+    """Deserialize JSON data back to Attachment objects."""
+    if not attachments_data:
+        return []
+
+    if not isinstance(attachments_data, list):
+        return []
+
+    attachments = []
+    for attachment_dict in attachments_data:
+        if isinstance(attachment_dict, dict):
+            # Create Attachment object from dict
+            attachment = Attachment(
+                url=attachment_dict.get("file_url", ""),
+                content_type=attachment_dict.get("content_type", ""),
+                name=attachment_dict.get("name", ""),
+            )
+            attachments.append(attachment)
+        elif hasattr(attachment_dict, "file_url"):
+            # Already an Attachment object
+            attachments.append(attachment_dict)
+
+    return attachments
+
 
 # Database configuration
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -45,7 +72,7 @@ def init_db():
     config.logger.info("Database initialized with SQLAlchemy")
 
 
-def get_user_preference(user_id: int) -> Dict[str, Any]:
+def get_user_preference(user_id: int):
     """Get user preference settings from the database."""
     db = get_db_session()
     try:
@@ -54,17 +81,19 @@ def get_user_preference(user_id: int) -> Dict[str, Any]:
         )
 
         if not preference:
-            return {
-                "bot_name": config.DEFAULT_BOT,
-                "system_prompt": "",
-                "temperature": 0.7,
-            }
+            # Create a new preference and save it to the database
+            preference = UserPreference(
+                user_id=user_id,
+                bot_name=config.DEFAULT_BOT,
+                system_prompt="",
+                temperature=0.7,
+            )
+            db.add(preference)
+            db.commit()
+            # Refresh the object to get the actual values
+            db.refresh(preference)
 
-        return {
-            "bot_name": preference.bot_name,
-            "system_prompt": preference.system_prompt,
-            "temperature": preference.temperature,
-        }
+        return preference
     finally:
         db.close()
 
@@ -103,9 +132,28 @@ def set_user_preference(user_id: int, **kwargs):
         db.close()
 
 
-def add_message_to_history(user_id: int, role: str, content: str, bot_name: str):
+def add_message_to_history(
+    user_id: int,
+    role: str,
+    content: str,
+    bot_name: str,
+    attachments: list[Attachment] | None = None,
+):
     """Add a message to the conversation history."""
     db = get_db_session()
+    # convert attachments to Dict type
+    attachments_dict = []
+    if attachments:
+        attachments_dict = [
+            {
+                "url": attachment.url,
+                "content_type": attachment.content_type,
+                "name": attachment.name,
+                "parsed_content": attachment.parsed_content,
+            }
+            for attachment in attachments
+        ]
+
     try:
         message = ConversationHistory(
             user_id=user_id,
@@ -113,6 +161,7 @@ def add_message_to_history(user_id: int, role: str, content: str, bot_name: str)
             content=content,
             bot_name=bot_name,
             timestamp=datetime.now(),
+            attachments=attachments_dict,
         )
         db.add(message)
         db.commit()
@@ -120,7 +169,9 @@ def add_message_to_history(user_id: int, role: str, content: str, bot_name: str)
         db.close()
 
 
-def get_conversation_history(user_id: int, limit: int = 10) -> List[Dict[str, str]]:
+def get_conversation_history(
+    user_id: int, limit: int = 10
+) -> List[ConversationHistory]:
     """Get the recent conversation history for a user."""
     db = get_db_session()
     try:
@@ -132,12 +183,7 @@ def get_conversation_history(user_id: int, limit: int = 10) -> List[Dict[str, st
             .all()
         )
 
-        # Convert to list and reverse for chronological order
-        result = []
-        for message in reversed(messages):
-            result.append({"role": message.role, "content": message.content})
-
-        return result
+        return messages
     finally:
         db.close()
 

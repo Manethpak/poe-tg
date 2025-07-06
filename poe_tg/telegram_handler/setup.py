@@ -29,5 +29,8 @@ def setup_handlers(application: Application) -> None:
     application.add_handler(CommandHandler("clear_history", clear_history))
     application.add_handler(CallbackQueryHandler(button_callback))
     application.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+        MessageHandler(
+            (filters.TEXT | filters.PHOTO | filters.ATTACHMENT) & ~filters.COMMAND,
+            handle_message,
+        )
     )

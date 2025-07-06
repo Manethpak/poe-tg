@@ -28,6 +28,7 @@ target_metadata = Base.metadata
 
 def get_url():
     """Get database URL from environment variable."""
+    print(os.getenv("DATABASE_URL"))
     return os.getenv("DATABASE_URL", "postgresql://user:password@localhost/poe_tg_db")
 
 
@@ -69,6 +70,7 @@ def run_migrations_online() -> None:
         configuration,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        client_encoding="utf8",
     )
 
     with connectable.connect() as connection:

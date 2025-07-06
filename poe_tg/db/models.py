@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Float, DateTime, BigInteger
+from sqlalchemy import Column, Integer, String, Text, Float, DateTime, BigInteger, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from datetime import datetime
@@ -24,3 +24,4 @@ class ConversationHistory(Base):
     role = Column(String(50), nullable=False)
     content = Column(Text, nullable=False)
     bot_name = Column(String(255), nullable=False)
+    attachments = Column(JSON, nullable=True)
