@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Literal, Optional, cast
 import fastapi_poe as fp
 from poe_tg import config
 from poe_tg.db.database import (
@@ -79,7 +79,7 @@ def build_message(
         messages.append(fp.ProtocolMessage(role="system", content=system_prompt))
 
     for msg in history:
-        role = str(msg.role)
+        role = cast(Literal["system", "user", "bot"], msg.role)
         content = str(msg.content)
         historic_attachment = []
         if msg.attachments:  # type: ignore
@@ -90,14 +90,11 @@ def build_message(
                 for a in msg.attachments
             ]
 
-        if role == "bot":
-            messages.append(
-                fp.ProtocolMessage(
-                    role="bot", content=content, attachments=historic_attachment
-                )
+        messages.append(
+            fp.ProtocolMessage(
+                role=role, content=content, attachments=historic_attachment
             )
-        elif role == "user":
-            messages.append(fp.ProtocolMessage(role="user", content=content))
+        )
 
     messages.append(
         fp.ProtocolMessage(
